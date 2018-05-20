@@ -97,10 +97,10 @@ int main(int argc, char** argv)
 
     int n = std::stoi(sequenceSize); //16;
 
-    if (n < 1 || n > 1064) //??????? 
+    if (n < 1 || n > pow(2,20)) //??????? 
     {
+        std::cout << "For performance reasons, only integers in range 1-20 are allowed.\n";
         return -1;
-        //neda sa - zeby nieco taketo tu dat ?
     }
 
     std::vector<std::vector<int>> sequences = GetSequences(n);
