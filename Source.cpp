@@ -99,7 +99,7 @@ int main(int argc, char** argv)
 
     if (n < 1 || n > pow(2,20)) //??????? 
     {
-        std::cout << "For performance reasons, only integers in range 1-20 are allowed.\n";
+        std::cout << "Allowed length is in the range 1 - 2^20.\n";
         return -1;
     }
 
