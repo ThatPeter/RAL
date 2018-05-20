@@ -97,8 +97,9 @@ int main(int argc, char** argv)
 
     int n = std::stoi(sequenceSize); //16;
 
-    if (n > 1064) //??????? 
+    if (n < 1 || n > 1064) //??????? 
     {
+        return -1;
         //neda sa - zeby nieco taketo tu dat ?
     }
 
