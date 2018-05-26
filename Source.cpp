@@ -2,6 +2,7 @@
 #include <vector>
 #include <bitset>
 #include <string>
+#include <queue>
 
 int BerlekampMassey(std::vector<int> s)
 {
@@ -46,41 +47,146 @@ int BerlekampMassey(std::vector<int> s)
 
     return L;
 }
-
-int pow(int base, int exponent)
-{
-    int number = 1;
-    for (int i = 0; i < exponent; i++)
-    {
-        number *= base;
-    }
-    return number;
-}
-
-constexpr int size(int n)
-{
-    return 2 << (n - 1);
-}
-
-std::vector<std::vector<int>> GetSequences(int n)
+/*
+std::vector<std::vector<int>> GetSequences(std::vector<std::string> answer)
 {
     std::vector<std::vector<int>> sequences;
-    for (int i = 0; i < pow(2, n); i++)
+    for (auto vec : answer)
     {
-        std::bitset<2 << 20> bits(i);
-        std::vector<int> sequence;
-        for (int i = 0; i < n; i++)
+        std::vector<int> toPushBack;
+        for (char c : vec)
         {
-            sequence.push_back(bits[i]);
+            toPushBack.push_back(std::stoi(std::string(&c)));
         }
-        sequences.push_back(sequence);
+        sequences.push_back(toPushBack);
     }
-    
+
     return sequences;
+}
+
+
+void getStrings(std::vector<std::string>& answer , std::string s, int digitsLeft)
+{
+    if (digitsLeft == 0) // the length of string is n
+        answer.push_back(s);
+    else
+    {
+        getStrings(answer, s + "0", digitsLeft - 1);
+        getStrings(answer, s + "1", digitsLeft - 1);
+    }
+}
+*/
+/*
+std::vector<std::vector<int>> GetSequences(std::queue<std::string> answer)
+{
+    std::vector<std::vector<int>> sequences;
+
+    while (answer.size() >= 1)
+    {
+        std::string str = answer.front();
+        answer.pop();
+        std::vector<int> toPushBack;
+        for (char c : str)
+        {
+            toPushBack.push_back(std::stoi(std::string(&c)));
+        }
+        sequences.push_back(toPushBack);
+    }
+
+    return sequences;
+}
+
+
+void getStrings(std::queue<std::string>& answer, std::string s, int digitsLeft)
+{
+    if (digitsLeft == 0) // the length of string is n
+        answer.push(s);
+    else
+    {
+        getStrings(answer, s + "0", digitsLeft - 1);
+        getStrings(answer, s + "1", digitsLeft - 1);
+    }
+}
+
+int main(int argc, char** argv)
+{   
+    try {
+        argc = 2;
+        if (argc < 2)
+        {
+            std::cout << "Please specify the sequence size.\n";
+            return -1;
+        }
+
+        if (argc > 2)
+        {
+            std::cout << "Invalid usage.\n";
+            return -1;
+        }
+
+
+        //  std::string sequenceSize = argv[1];
+         // int n = std::stoi(sequenceSize);
+        int n = 23;
+        std::queue<std::string> gf2StringVectors;
+        std::string s;
+        getStrings(gf2StringVectors, s, n);
+
+        std::vector<std::vector<int>> sequences = GetSequences(gf2StringVectors);
+
+        std::vector<int> results(n + 1, 0);
+
+        for (int i = 0; i < sequences.size(); i++)
+        {
+            results[BerlekampMassey(sequences[i])]++;
+        }
+
+        for (int i = 0; i < n + 1; i++)
+        {
+            std::cout << i << ": " << results[i] << "\n";
+        }
+    }
+    catch (std::invalid_argument& ia)
+    {
+        std::cout << ia.what();
+    }
+
+    return 0;
+}
+*/
+void processSequence(std::vector<int>& results, std::string answer)
+{
+    std::vector<int> toPushBack;
+    for (char c : answer)
+    {
+        toPushBack.push_back(std::stoi(std::string(&c)));
+    }
+    results[BerlekampMassey(toPushBack)]++;
+}
+
+void stringProcessing(std::vector<int>& results, std::string s, int digitsLeft)
+{
+    if (digitsLeft == 0) 
+    {
+        processSequence(results, s);
+        return;
+    }
+    else
+    {
+        stringProcessing(results, s + "0", digitsLeft - 1);
+        stringProcessing(results, s + "1", digitsLeft - 1);
+    }
+}
+
+void process(std::vector<int>& results, int length)
+{
+    std::string s;
+    stringProcessing(results, s, length);
 }
 
 int main(int argc, char** argv)
 {
+    argc = 2;
     if (argc < 2)
     {
         std::cout << "Please specify the sequence size.\n";
@@ -93,29 +199,21 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    std::string sequenceSize = argv[1];
 
-    int n = std::stoi(sequenceSize); //16;
-
-    if (n < 1 || n > pow(2,20)) //??????? 
-    {
-        std::cout << "Allowed length is in the range 1 - 2^20.\n";
-        return -1;
-    }
-
-    std::vector<std::vector<int>> sequences = GetSequences(n);
-
+    //  std::string sequenceSize = argv[1];
+    // int n = std::stoi(sequenceSize);
+    int n = 30;
+    std::string s;
+        
     std::vector<int> results(n + 1, 0);
 
-    for (int i = 0; i < sequences.size(); i++)
-    {
-        results[BerlekampMassey(sequences[i])]++;
-    }
+    process(results, n);
 
     for (int i = 0; i < n + 1; i++)
     {
         std::cout << i << ": " << results[i] << "\n";
     }
+
 
     return 0;
 }
